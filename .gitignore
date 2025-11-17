@@ -54,5 +54,6 @@ dkms.conf
 # debug information files
 *.dwo
 
-# EFI image files
+# Disk, EFI, and other image files
 *.fd
+*.img

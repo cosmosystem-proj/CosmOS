@@ -1,4 +1,4 @@
-# boot/Makefile
+# system/Makefile
 # Created 2025-11-16 by Kurt M. Weber
 # This file is part of CosmOS, a component of the Cosmoverse
 # Licensed under Hippocratic License with clauses:
