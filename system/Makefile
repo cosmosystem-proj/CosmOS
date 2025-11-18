@@ -7,7 +7,16 @@
 
 WGET = wget
 
-efi-img: OVMF.fd
+OVMF_URL = https://retrage.github.io/edk2-nightly/bin/RELEASEX64_OVMF.fd
+
+boot-img: OVMF.fd efi.img
+
+efi.img:
+# FAT32 partitions have a minimum size of 32 megabytes, we go with 48 to account for overhead
+	dd if=/dev/zero of=efi.img bs=512 count=93750	
 
 OVMF.fd:
-	$(WGET) https://retrage.github.io/edk2-nightly/bin/RELEASEX64_OVMF.fd -O $@
+	$(WGET) $(OVMF_URL) -O $@
+
+clean:
+	rm -f OVMF.fd
