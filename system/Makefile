@@ -16,7 +16,7 @@ qemu-run: boot-img
 
 boot-img: OVMF.fd efi.img
 
-efi.img: tmp.img
+efi.img: tmp.img ../tools/3rdparty/mkgpt/mkgpt
 # FAT32 partitions have a minimum size of 32 megabytes, we go with 48 to account for overhead
 #	dd if=/dev/zero of=efi.img bs=512 count=93750
 #	/usr/sbin/parted efi.img -s -a minimal mklabel gpt
@@ -39,6 +39,9 @@ tmp.img: ../boot/BOOTX64.efi
 
 OVMF.fd:
 	$(WGET) $(OVMF_URL) -O $@
+
+../tools/3rdparty/mkgpt/mkgpt:
+	cd ../tools/3rdparty && make mkgpt
 
 clean:
 	rm -f OVMF.fd *.img

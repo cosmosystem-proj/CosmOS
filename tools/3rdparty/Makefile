@@ -5,7 +5,7 @@
 # HL3-CL-ECO-EXTR-FFD-MEDIA-MY-SUP-SV-TAL-USTA-XUAR
 # See file LICENSE for full licensing information.
 
-.PHONY: mkgpt
+.PHONY: mkgpt clean
 
 mkgpt: mkgpt/
 
@@ -16,3 +16,6 @@ mkgpt/:
 	cd mkgpt && autoreconf
 	cd mkgpt && ./configure
 	cd mkgpt && make
+
+clean:
+	rm -rf mkgpt/

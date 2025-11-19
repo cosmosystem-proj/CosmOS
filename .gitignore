@@ -58,3 +58,6 @@ dkms.conf
 # Disk, EFI, and other image files
 *.fd
 *.img
+
+# Tools
+tools/3rdparty/mkgpt/
