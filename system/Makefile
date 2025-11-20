@@ -9,38 +9,35 @@ WGET = wget
 
 OVMF_URL = https://retrage.github.io/edk2-nightly/bin/RELEASEX64_OVMF.fd
 
+MKGPT = ../tools/3rdparty/mkgpt/mkgpt
+
 all: qemu-run
 
 qemu-run: boot-img
-	qemu-system-x86_64 -bios OVMF.fd -drive file=efi.img,if=ide
+#qemu-system-x86_64 -bios OVMF.fd -drive file=efi.img,if=ide
+	qemu-system-x86_64 -L . -pflash OVMF.fd -hda efi.img
 
 boot-img: OVMF.fd efi.img
 
-efi.img: tmp.img ../tools/3rdparty/mkgpt/mkgpt
-# FAT32 partitions have a minimum size of 32 megabytes, we go with 48 to account for overhead
-#	dd if=/dev/zero of=efi.img bs=512 count=93750
-#	/usr/sbin/parted efi.img -s -a minimal mklabel gpt
-#	/usr/sbin/parted efi.img -s -a minimal mkpart EFI FAT32 2048s 93716s
-#	/usr/sbin/parted efi.img -s -a minimal toggle 1 boot
-#	dd if=tmp.img of=efi.img bs=512 count=91669 seek=2048 conv=notrunc
-	dd if=/dev/zero of=fat.img bs=1k count=1440
-	mformat -i fat.img -f 1440 ::
-	mmd -i fat.img ::/EFI
-	mmd -i fat.img ::/EFI/BOOT
-	mcopy -i fat.img BOOTX64.EFI ::/EFI/BOOT
+efi.img: tmp.img $(MKGPT)
+	$(MKGPT) -o efi.img --image-size 4096 --part tmp.img --type system
+	
 
 
 tmp.img: ../boot/BOOTX64.efi
-#	dd if=/dev/zero of=tmp.img bs=512 count=91669
-#	mformat -i tmp.img -F -h 32 -t 32 -n 64 -c 1
-#	mmd -i tmp.img /BOOT
-#	mmd -i tmp.img /BOOT/EFI
-#	mcopy -i tmp.img $< ::/BOOT/EFI
+	dd if=/dev/zero of=tmp.img bs=1k count=1440
+	mformat -i tmp.img -f 1440 ::
+	mmd -i tmp.img ::/EFI
+	mmd -i tmp.img ::/EFI/BOOT
+	mcopy -i tmp.img ../boot/BOOTX64.efi ::/EFI/BOOT
+
+../boot/BOOTX64.efi:
+	cd ../boot && make BOOTX64.efi
 
 OVMF.fd:
 	$(WGET) $(OVMF_URL) -O $@
 
-../tools/3rdparty/mkgpt/mkgpt:
+$(MKGPT):
 	cd ../tools/3rdparty && make mkgpt
 
 clean:
