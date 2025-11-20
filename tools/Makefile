@@ -9,9 +9,10 @@
 
 all: 3rdparty
 
-3rdparty:
+3rdparty: FORCE
 	cd 3rdparty && make
 
+FORCE:
 
 clean: 3rdparty-clean
 

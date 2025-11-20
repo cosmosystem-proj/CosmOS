@@ -5,11 +5,11 @@
 # HL3-CL-ECO-EXTR-FFD-MEDIA-MY-SUP-SV-TAL-USTA-XUAR
 # See file LICENSE for full licensing information.
 
-SOURCES = bootloader.c
-OBJS = bootloader.o
+SOURCES = bootloader.c wrappers.c
+OBJS = bootloader.o wrappers.o
 
 CC = gcc
-CFLAGS = -fpic -ffreestanding -fno-stack-protector -fno-stack-check -fshort-wchar -mno-red-zone -maccumulate-outgoing-args
+CFLAGS = -I ../include -fpic -ffreestanding -fno-stack-protector -fno-stack-check -fshort-wchar -mno-red-zone -maccumulate-outgoing-args
 
 .PHONY: clean
 

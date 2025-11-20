@@ -7,7 +7,7 @@
 
 .PHONY = all tools clean
 
-all: tools boot system
+all: boot
 
 tools: FORCE
 	cd tools && make
@@ -15,7 +15,7 @@ tools: FORCE
 boot: FORCE
 	cd boot && make
 
-system: FORCE
+system: boot tools FORCE
 	cd system && make
 
 FORCE:
