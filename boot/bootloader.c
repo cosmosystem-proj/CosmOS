@@ -12,23 +12,24 @@
 #include <efi/efi.h>
 #include <efi/efilib.h>
 
+#include <boot/convenience.h>
+#include <boot/memorymap.h>
 #include <boot/wrappers.h>
 
 EFI_STATUS EFIAPI efi_main(EFI_HANDLE ImageHandle,
                            EFI_SYSTEM_TABLE *SystemTable) {
-  EFI_INPUT_KEY Key;
   InitializeLib(ImageHandle, SystemTable);
 
-  ConOutClearScreen();
+  con_out_clear_screen();
 
-  ConOutOutputString(L"Preparing to load CosmOS\r\n");
+  Print(L"Preparing to load CosmOS\r\n");
 
-  ConInReset(FALSE);
-
-  while (ConInReadKeyStroke(&Key) == EFI_NOT_READY) {
-    ;
-  }
+  wait_key_press();
 
   Print(L"Obtaining system memory map...");
+
+  memory_map();
+  // uefi_call_wrapper(BS->ExitBootServices, 0);
+
   return EFI_SUCCESS;
 }

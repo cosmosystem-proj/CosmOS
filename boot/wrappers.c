@@ -12,18 +12,18 @@
 #include <efi/efi.h>
 #include <efi/efilib.h>
 
-EFI_STATUS ConOutClearScreen() {
+EFI_STATUS con_out_clear_screen() {
   return uefi_call_wrapper(ST->ConOut->ClearScreen, 1, ST->ConOut);
 }
 
-EFI_STATUS ConOutOutputString(const CHAR16 *s) {
+EFI_STATUS con_out_output_string(const CHAR16 *s) {
   return uefi_call_wrapper(ST->ConOut->OutputString, 2, ST->ConOut, s);
 }
 
-EFI_STATUS ConInReset(BOOLEAN ExtendedVerification) {
-  return uefi_call_wrapper(ST->ConIn->Reset, 2, ST->ConIn, FALSE);
+EFI_STATUS con_in_reset(BOOLEAN ExtendedVerification) {
+  return uefi_call_wrapper(gST->ConIn->Reset, 2, ST->ConIn, FALSE);
 }
 
-EFI_STATUS ConInReadKeyStroke(EFI_INPUT_KEY *Key) {
-  return uefi_call_wrapper(ST->ConIn->ReadKeyStroke, 2, ST->ConIn, Key);
+EFI_STATUS con_in_read_key_stroke(EFI_INPUT_KEY *Key) {
+  return uefi_call_wrapper(gST->ConIn->ReadKeyStroke, 2, ST->ConIn, Key);
 }

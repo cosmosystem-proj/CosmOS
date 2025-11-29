@@ -9,15 +9,15 @@
  * licensing information.
  */
 
-#ifndef _WRAPPERS_H
-#define _WRAPPERS_H
+#ifndef _BOOT_WRAPPERS_H
+#define _BOOT_WRAPPERS_H
 
 #include <efi/efi.h>
 #include <efi/efilib.h>
 
-EFI_STATUS ConOutClearScreen();
-EFI_STATUS ConOutOutputString(const CHAR16 *s);
-EFI_STATUS ConInReset(BOOLEAN ExtendedVerification);
-EFI_STATUS ReadKeyStroke(EFI_INPUT_KEY *Key);
+EFI_STATUS con_out_clear_screen();
+EFI_STATUS con_out_output_string(const CHAR16 *s);
+EFI_STATUS con_in_reset(BOOLEAN ExtendedVerification);
+EFI_STATUS con_in_read_key_stroke(EFI_INPUT_KEY *Key);
 
 #endif
