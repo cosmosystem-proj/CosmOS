@@ -13,6 +13,7 @@
 #include <efi/efilib.h>
 
 #include <boot/convenience.h>
+#include <boot/loadkernel.h>
 #include <boot/memorymap.h>
 #include <boot/wrappers.h>
 
@@ -30,6 +31,8 @@ EFI_STATUS EFIAPI efi_main(EFI_HANDLE ImageHandle,
 
   memory_map();
   // uefi_call_wrapper(BS->ExitBootServices, 0);
+
+  load_kernel(ImageHandle);
 
   return EFI_SUCCESS;
 }

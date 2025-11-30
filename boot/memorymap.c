@@ -52,7 +52,7 @@ void memory_map() {
   Print(L"Number of descriptors: %lu\r\n", num_ranges);
   wait_key_press();
 
-  for (UINTN i = 0; i < num_ranges; i++) {
+  /*for (UINTN i = 0; i < num_ranges; i++) {
     EFI_MEMORY_DESCRIPTOR *cur =
         (EFI_MEMORY_DESCRIPTOR *)(((uint8_t *)map) + (descriptor_size * i));
     Print(L"Range: %lX Physical start: %lX Virtual start: %lX Pages: "
@@ -64,5 +64,5 @@ void memory_map() {
       wait_key_press();
     }
   }
-  wait_key_press();
+  wait_key_press();*/
 }

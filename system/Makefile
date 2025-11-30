@@ -24,12 +24,13 @@ efi.img: tmp.img $(MKGPT)
 	
 
 
-tmp.img: ../boot/BOOTX64.efi
+tmp.img: ../boot/BOOTX64.efi test.txt
 	dd if=/dev/zero of=tmp.img bs=1k count=1440
 	mformat -i tmp.img -f 1440 ::
 	mmd -i tmp.img ::/EFI
 	mmd -i tmp.img ::/EFI/BOOT
 	mcopy -i tmp.img ../boot/BOOTX64.efi ::/EFI/BOOT
+	mcopy -i tmp.img test.txt ::/EFI/BOOT
 
 ../boot/BOOTX64.efi:
 	cd ../boot && make BOOTX64.efi
