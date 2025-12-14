@@ -15,7 +15,9 @@
 #include <boot/convenience.h>
 #include <boot/loadkernel.h>
 #include <boot/memorymap.h>
+#include <boot/paging.h>
 #include <boot/wrappers.h>
+#include <types.h>
 
 EFI_STATUS EFIAPI efi_main(EFI_HANDLE ImageHandle,
                            EFI_SYSTEM_TABLE *SystemTable) {
@@ -28,6 +30,8 @@ EFI_STATUS EFIAPI efi_main(EFI_HANDLE ImageHandle,
   wait_key_press();
 
   Print(L"Obtaining system memory map...");
+
+  reg_cr3 cr3 = setup_page_tables();
 
   memory_map();
   // uefi_call_wrapper(BS->ExitBootServices, 0);

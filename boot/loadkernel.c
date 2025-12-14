@@ -14,6 +14,9 @@
 
 #include <boot/convenience.h>
 #include <boot/error.h>
+#include <boot/file.h>
+#include <boot/wrappers.h>
+#include <mm/mm.h>
 
 EFI_STATUS get_loaded_image(EFI_HANDLE image_handle,
                             EFI_LOADED_IMAGE **loaded_image) {
@@ -58,17 +61,10 @@ EFI_FILE_HANDLE open_file(EFI_FILE_HANDLE volume_handle, CHAR16 *path) {
   return file_handle;
 }
 
-UINT64 get_file_size(EFI_FILE_HANDLE file_handle) {
-  // make sure file_handle is valid before calling, because this function has no
-  // way to return errors
-
-  EFI_FILE_INFO *fi;
-
-  fi = LibFileInfo(file_handle);
-  UINT64 file_size = fi->FileSize;
-  FreePool(fi);
-
-  return file_size;
+EFI_STATUS read_file_into_buffer(EFI_FILE_HANDLE file_handle, UINT8 *buffer,
+                                 UINT64 buf_size) {
+  return uefi_call_wrapper(file_handle->Read, 3, file_handle, &buf_size,
+                           (UINT8 *)buffer);
 }
 
 void load_kernel(EFI_HANDLE image_handle) {
@@ -90,13 +86,24 @@ void load_kernel(EFI_HANDLE image_handle) {
 
   UINT64 file_size = get_file_size(file_handle);
 
-  char *buf;
-  buf = AllocatePool(file_size + 1);
-  uefi_call_wrapper(file_handle->Read, 3, file_handle, &file_size,
-                    (UINT8 *)buf);
-  buf[file_size] = '\0';
+  EFI_PHYSICAL_ADDRESS base_addr;
 
-  Print(L"%a", buf);
+  status = allocate_pages(AllocateAnyPages, EfiLoaderData,
+                          PAGES_REQUIRED_4K(file_size + 1), &base_addr);
+  if (status != EFI_SUCCESS) {
+    status_msg(status, __FILE__, __func__, __LINE__);
+  }
+
+  UINT8 *buffer = (UINT8 *)base_addr;
+
+  status = read_file_into_buffer(file_handle, buffer, file_size);
+  if (status != EFI_SUCCESS) {
+    status_msg(status, __FILE__, __func__, __LINE__);
+  }
+
+  buffer[file_size] = '\0';
+
+  Print(L"%a", buffer);
 
   wait_key_press();
 

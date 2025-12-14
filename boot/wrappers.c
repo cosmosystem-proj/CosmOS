@@ -12,6 +12,13 @@
 #include <efi/efi.h>
 #include <efi/efilib.h>
 
+EFI_STATUS allocate_pages(EFI_ALLOCATE_TYPE alloc_type,
+                          EFI_MEMORY_TYPE mem_type, UINTN num_pages,
+                          EFI_PHYSICAL_ADDRESS *mem) {
+  return uefi_call_wrapper(BS->AllocatePages, 4, alloc_type, mem_type,
+                           num_pages, mem);
+}
+
 EFI_STATUS con_out_clear_screen() {
   return uefi_call_wrapper(ST->ConOut->ClearScreen, 1, ST->ConOut);
 }
