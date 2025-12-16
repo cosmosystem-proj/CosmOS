@@ -35,8 +35,7 @@ void load_kernel(EFI_HANDLE image_handle) {
 
   volume_handle = get_volume_handle(loaded_image);
 
-  CHAR16 *path = u"\\EFI\\BOOT\\test.txt";
-  file_handle = open_file(volume_handle, path);
+  file_handle = open_file(volume_handle, kernel_path);
 
   UINT64 file_size = get_file_size(file_handle);
 
