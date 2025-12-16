@@ -19,6 +19,10 @@ EFI_STATUS allocate_pages(EFI_ALLOCATE_TYPE alloc_type,
                            num_pages, mem);
 }
 
+EFI_STATUS allocate_pool(EFI_MEMORY_TYPE pool_type, UINTN size, VOID **buffer) {
+  return uefi_call_wrapper(BS->AllocatePool, 3, pool_type, size, buffer);
+}
+
 EFI_STATUS con_out_clear_screen() {
   return uefi_call_wrapper(ST->ConOut->ClearScreen, 1, ST->ConOut);
 }

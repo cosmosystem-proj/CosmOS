@@ -7,7 +7,8 @@
 
 WGET = wget
 
-OVMF_URL = https://retrage.github.io/edk2-nightly/bin/RELEASEX64_OVMF.fd
+#OVMF_URL = https://retrage.github.io/edk2-nightly/bin/RELEASEX64_OVMF.fd
+OVMF_URL = http://raw.githubusercontent.com/retrage/edk2-nightly/8af6f0d835e1d9107a4e6b5b8a469aa9d79291e5/bin/RELEASEX64_OVMF.fd
 
 MKGPT = ../tools/3rdparty/mkgpt/mkgpt
 

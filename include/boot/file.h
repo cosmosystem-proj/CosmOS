@@ -15,5 +15,8 @@
 #include <efi/efi.h>
 
 UINT64 get_file_size(EFI_FILE_HANDLE file_handle);
+EFI_LOADED_IMAGE *get_loaded_image(EFI_HANDLE image_handle);
+EFI_FILE_HANDLE get_volume_handle(EFI_LOADED_IMAGE *image);
+EFI_FILE_HANDLE open_file(EFI_FILE_HANDLE volume_handle, CHAR16 *path);
 
 #endif
