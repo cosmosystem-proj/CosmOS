@@ -12,6 +12,7 @@
 #include <efi/efi.h>
 #include <efi/efilib.h>
 
+#include <boot/boot.h>
 #include <boot/convenience.h>
 #include <boot/error.h>
 #include <boot/file.h>

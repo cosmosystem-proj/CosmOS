@@ -12,12 +12,15 @@
 #include <efi/efi.h>
 #include <efi/efilib.h>
 
+#include <boot/boot.h>
 #include <boot/convenience.h>
 #include <boot/loadkernel.h>
 #include <boot/memorymap.h>
 #include <boot/paging.h>
 #include <boot/wrappers.h>
 #include <types.h>
+
+const CHAR16 *kernel_path = u"\\EFI\\BOOT\\test.txt";
 
 EFI_STATUS EFIAPI efi_main(EFI_HANDLE ImageHandle,
                            EFI_SYSTEM_TABLE *SystemTable) {
