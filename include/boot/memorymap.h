@@ -12,6 +12,28 @@
 #ifndef _BOOT_MEMORYMAP_H
 #define _BOOT_MEMORYMAP_H
 
-void memory_map();
+#include <efi/efi.h>
+
+#include <mm/mm.h>
+#include <types.h>
+
+typedef struct physical_map_list physical_map_list;
+typedef struct physical_map_list {
+  physical_map *pm;
+  physical_map_list *next;
+} physical_map_list;
+
+typedef struct {
+  EFI_MEMORY_DESCRIPTOR *mem_map;
+  UINTN count;
+  UINTN descriptor_size;
+} uefi_memory_map;
+
+physical_map_list *convert_memory_map(uefi_memory_map *uefi_map);
+void memory_map(EFI_MEMORY_DESCRIPTOR **mem_map, UINTN *count,
+                UINTN *descriptor_size);
+physical_map_list *reduce_memory_map(physical_map_list *pml);
+physical_map_list *sort_memory_map(physical_map_list *pml);
+physical_map *tabularize_memory_map(physical_map_list *pml, uint64 *count);
 
 #endif

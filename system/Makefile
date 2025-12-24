@@ -16,7 +16,7 @@ all: qemu-run
 
 qemu-run: boot-img
 #qemu-system-x86_64 -bios OVMF.fd -drive file=efi.img,if=ide
-	qemu-system-x86_64 -L . -pflash OVMF.fd -hda efi.img
+	qemu-system-x86_64 -L . -pflash OVMF.fd -hda efi.img -monitor stdio
 
 boot-img: OVMF.fd efi.img
 

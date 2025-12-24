@@ -12,6 +12,9 @@
 #ifndef _TYPES_H
 #define _TYPES_H
 
+#define MAX(a, b) (((a) > (b)) ? (a) : (b))
+#define MIN(a, b) (((a) < (b)) ? (a) : (b))
+
 #ifdef __LP64__
 // unsigned integer types
 typedef unsigned long uint64;

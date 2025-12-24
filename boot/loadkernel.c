@@ -26,7 +26,6 @@ EFI_STATUS read_file_into_buffer(EFI_FILE_HANDLE file_handle, UINT8 *buffer,
 }
 
 void load_kernel(EFI_HANDLE image_handle) {
-
   EFI_LOADED_IMAGE *loaded_image;
   EFI_FILE_HANDLE volume_handle, file_handle;
   EFI_STATUS status;
