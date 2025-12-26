@@ -38,12 +38,12 @@ typedef unsigned char reg8;
 typedef union {
   reg64 raw;
   struct {
-    qword : 3;
-    qword pwt : 1;
-    qword pct : 1;
-    qword : 11;
-    qword pml4_base : 40;
-    qword : 12;
+    reg64 : 3;
+    reg64 pwt : 1;
+    reg64 pct : 1;
+    reg64 : 7;
+    reg64 pml4_base : 40;
+    reg64 : 12;
   } values;
 } reg_cr3;
 #endif

@@ -110,6 +110,7 @@ void memory_map(EFI_MEMORY_DESCRIPTOR **mem_map, UINTN *count,
 
   Print(L"Map obtained\r\n");
 
+#if 0
   for (UINTN i = 0; i < num_entries; i++) {
     EFI_MEMORY_DESCRIPTOR *cur =
         (EFI_MEMORY_DESCRIPTOR *)(((uint8_t *)map) + (*descriptor_size * i));
@@ -123,6 +124,7 @@ void memory_map(EFI_MEMORY_DESCRIPTOR **mem_map, UINTN *count,
     }
   }
   wait_key_press();
+#endif
 }
 
 bool overlap_or_adjacent(physical_map *a, physical_map *b) {
@@ -202,7 +204,6 @@ physical_map_list *sort_memory_map(physical_map_list *pml) {
     count++;
     tmp = tmp->next;
   }
-  Print(L"Count: %lu\r\n", count);
 
   allocate_pool(EfiLoaderData, count * sizeof(physical_map_list **),
                 (VOID **)&table);
