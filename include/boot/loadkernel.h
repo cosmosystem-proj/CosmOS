@@ -14,6 +14,8 @@
 
 #include <efi/efi.h>
 
-void load_kernel(EFI_HANDLE image_handle);
+#include <types.h>
+
+void load_kernel(EFI_HANDLE image_handle, byte *phys_addr);
 
 #endif

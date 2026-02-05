@@ -18,6 +18,7 @@
 #include <boot/file.h>
 #include <boot/wrappers.h>
 #include <mm/mm.h>
+#include <types.h>
 
 EFI_STATUS read_file_into_buffer(EFI_FILE_HANDLE file_handle, UINT8 *buffer,
                                  UINT64 buf_size) {
@@ -25,7 +26,7 @@ EFI_STATUS read_file_into_buffer(EFI_FILE_HANDLE file_handle, UINT8 *buffer,
                            (UINT8 *)buffer);
 }
 
-void load_kernel(EFI_HANDLE image_handle) {
+void load_kernel(EFI_HANDLE image_handle, byte *phys_addr) {
   EFI_LOADED_IMAGE *loaded_image;
   EFI_FILE_HANDLE volume_handle, file_handle;
   EFI_STATUS status;
@@ -38,24 +39,16 @@ void load_kernel(EFI_HANDLE image_handle) {
 
   UINT64 file_size = get_file_size(file_handle);
 
-  EFI_PHYSICAL_ADDRESS base_addr;
-
-  status = allocate_pages(AllocateAnyPages, EfiLoaderData,
-                          PAGES_REQUIRED_4K(file_size + 1), &base_addr);
+  status = read_file_into_buffer(file_handle, phys_addr, file_size);
   if (status != EFI_SUCCESS) {
     status_msg(status, __FILE__, __func__, __LINE__);
   }
 
-  UINT8 *buffer = (UINT8 *)base_addr;
+  // this is only necessary during testing when we load a text file and print it
+  // out, not the actual kernel
+  phys_addr[file_size] = '\0';
 
-  status = read_file_into_buffer(file_handle, buffer, file_size);
-  if (status != EFI_SUCCESS) {
-    status_msg(status, __FILE__, __func__, __LINE__);
-  }
-
-  buffer[file_size] = '\0';
-
-  Print(L"%a", buffer);
+  Print(L"%a", phys_addr);
 
   wait_key_press();
 

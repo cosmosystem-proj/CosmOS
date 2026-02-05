@@ -22,4 +22,6 @@ reg_cr3 setup_page_tables(uint64 kernel_text_pages, uint64 kernel_heap_pages,
                           void *kernel_heap_phys_loc,
                           void *kernel_stack_phys_loc, uint64 phys_map_pages,
                           physical_map *phys_map, uint64 phys_map_size);
+void *virtual_to_physical(void *virtual, reg_cr3 cr3);
+void write_cr3(reg_cr3 new);
 #endif

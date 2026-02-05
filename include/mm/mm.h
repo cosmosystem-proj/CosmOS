@@ -45,7 +45,7 @@
 
 #ifndef KERNEL_STACK_INIT_BOTTOM
 #define KERNEL_STACK_INIT_BOTTOM                                               \
-  (0x0000000000000000 - INITIAL_KERNEL_STACK_SIZE)
+  (0x0000000000000000L - INITIAL_KERNEL_STACK_SIZE)
 #endif
 
 #ifndef DIRECT_MAP_BASE_ADDRESS
@@ -53,23 +53,24 @@
 #endif
 
 #define PTTENTRY_BASE_MASK 0x000FFFFFFFFFF000
-#define EXTRACT_PTTENTRY_BASE(x) ((x) & PTTENTRY_BASE_MASK)
+#define EXTRACT_PTTENTRY_BASE(x) ((void *)((x) & PTTENTRY_BASE_MASK))
 
 #define PML4_INDEX_MASK 0x0000FF8000000000
 #define PML4_INDEX_SHIFT 39
-#define EXTRACT_PML4_IDX(x) (((x) & PML4_INDEX_MASK) >> PML4_INDEX_SHIFT)
+#define EXTRACT_PML4_IDX(x)                                                    \
+  ((((uint64)x) & PML4_INDEX_MASK) >> PML4_INDEX_SHIFT)
 
 #define PDP_INDEX_MASK 0x0000007FC0000000
 #define PDP_INDEX_SHIFT 30
-#define EXTRACT_PDP_IDX(x) (((x) & PDP_INDEX_MASK) >> PDP_INDEX_SHIFT)
+#define EXTRACT_PDP_IDX(x) ((((uint64)x) & PDP_INDEX_MASK) >> PDP_INDEX_SHIFT)
 
 #define PD_INDEX_MASK 0x000000003FE00000
 #define PD_INDEX_SHIFT 21
-#define EXTRACT_PD_IDX(x) (((x) & PD_INDEX_MASK) >> PD_INDEX_SHIFT)
+#define EXTRACT_PD_IDX(x) (((uint64)(x) & PD_INDEX_MASK) >> PD_INDEX_SHIFT)
 
 #define PT_INDEX_MASK 0x00000000001FF000
 #define PT_INDEX_SHIFT 12
-#define EXTRACT_PT_IDX(x) (((x) & PT_INDEX_MASK) >> PT_INDEX_SHIFT)
+#define EXTRACT_PT_IDX(x) ((((uint64)x) & PT_INDEX_MASK) >> PT_INDEX_SHIFT)
 
 typedef enum {
   USABLE,
@@ -138,9 +139,9 @@ typedef union {
     uint64 pwt : 1;
     uint64 pcd : 1;
     uint64 accessed : 1;
-    uint64 ign_lo : 1;
-    uint64 mbz : 1;
-    uint64 ign_hi : 1;
+    uint64 dirty : 1;
+    uint64 ps : 1;
+    uint64 ign : 1;
     uint64 avl_lo : 3;
     uint64 base : 40;
     uint64 avl_hi : 11;
@@ -157,9 +158,9 @@ typedef union {
     uint64 pwt : 1;
     uint64 pcd : 1;
     uint64 accessed : 1;
-    uint64 ign_lo : 1;
-    uint64 mbz : 1;
-    uint64 ign_hi : 1;
+    uint64 dirty : 1;
+    uint64 ps : 1;
+    uint64 ign : 1;
     uint64 avl_lo : 3;
     uint64 base : 40;
     uint64 avl_hi : 11;

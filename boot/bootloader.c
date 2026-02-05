@@ -96,12 +96,64 @@ EFI_STATUS EFIAPI efi_main(EFI_HANDLE ImageHandle,
   allocate_pages(AllocateAnyPages, EfiLoaderData, kernel_stack_pages,
                  (EFI_PHYSICAL_ADDRESS *)&kernel_stack_paddr);
 
-  setup_page_tables(kernel_text_pages, kernel_heap_pages, kernel_stack_pages,
-                    kernel_text_paddr, kernel_heap_paddr, kernel_stack_paddr,
-                    memtab_size, memtab, memtab_size);
+  reg_cr3 new_cr3 = setup_page_tables(
+      kernel_text_pages, kernel_heap_pages, kernel_stack_pages,
+      kernel_text_paddr, kernel_heap_paddr, kernel_stack_paddr,
+      PAGES_REQUIRED_4K(sizeof(physical_map) * memtab_size), memtab,
+      memtab_size);
+#if 0
+
+  Print(L"Kernel text at physical %lX, virtual %lX, mapped to %lX\r\n",
+        kernel_text_paddr, KERNEL_BASE_ADDRESS,
+        virtual_to_physical((void *)KERNEL_BASE_ADDRESS, new_cr3));
+  Print(L"     Virtual %lX mapped to physical %lX\r\n", kernel_text_paddr,
+        virtual_to_physical(kernel_text_paddr, new_cr3));
+
+  void *phys_map_vaddr =
+      (void *)KERNEL_BASE_ADDRESS + (kernel_text_pages * ONE_KILOBYTE * 4);
+  Print(L"Physical map at physical %lX, virtual %lX, mapped to %lX\r\n", memtab,
+        phys_map_vaddr, virtual_to_physical((void *)phys_map_vaddr, new_cr3));
+  Print(L"     Virtual %lX mapped to physical %lX\r\n", memtab,
+        virtual_to_physical(memtab, new_cr3));
+
+  void *kernel_heap_vaddr =
+      phys_map_vaddr + (PAGES_REQUIRED_4K(sizeof(physical_map) * memtab_size) *
+                        ONE_KILOBYTE * 4);
+  Print(L"Kernel heap at physical %lX, virtual %lX, mapped to %lX\r\n",
+        kernel_heap_paddr, kernel_heap_vaddr,
+        virtual_to_physical(kernel_heap_vaddr, new_cr3));
+  Print(L"     Virtual %lX mapped to physical %lX\r\n", kernel_heap_paddr,
+        virtual_to_physical(kernel_heap_paddr, new_cr3));
+
+  Print(L"Kernel stack at physical %lX, virtual %lX, mapped to %lX\r\n",
+        kernel_stack_paddr, KERNEL_STACK_INIT_BOTTOM,
+        virtual_to_physical((void *)KERNEL_STACK_INIT_BOTTOM, new_cr3));
+  Print(L"     Virtual %lX mapped to physical %lX\r\n", kernel_stack_paddr,
+        virtual_to_physical(kernel_stack_paddr, new_cr3));
+
+  Print(L"BS->ExitBootServices at physical %lX, virtual %lX, old mapped to "
+        L"%lX, new mapped to %lX\r\n",
+        &(BS->ExitBootServices), &(BS->ExitBootServices),
+        virtual_to_physical(&(BS->ExitBootServices), cr3),
+        virtual_to_physical(&(BS->ExitBootServices), new_cr3));
+#endif
   //  uefi_call_wrapper(BS->ExitBootServices, 0);
 
-  load_kernel(ImageHandle);
+  Print(L"EFIMain virtual address: %lX, physical in old CR3: %lX, new CR3: "
+        L"%lX\r\n",
+        &efi_main, virtual_to_physical(&efi_main, cr3),
+        virtual_to_physical(&efi_main, new_cr3));
+
+  Print(L"write_cr3 virtual address: %lX, physical in old CR3: %lX, new CR3: "
+        L"%lX\r\n",
+        &write_cr3, virtual_to_physical(&write_cr3, cr3),
+        virtual_to_physical(&write_cr3, new_cr3));
+
+  /*Print(L"Swapping CR3\r\n");
+  write_cr3(new_cr3);
+  Print(L"CR3 swapped\r\n");*/
+
+  load_kernel(ImageHandle, (byte *)kernel_text_paddr);
 
   return EFI_SUCCESS;
 }

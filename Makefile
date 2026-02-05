@@ -9,14 +9,18 @@
 
 all: boot
 
+debug: DEBUG = debug
+
+debug: all
+
 tools: FORCE
-	cd tools && make
+	cd tools && make $(DEBUG)
 
 boot: FORCE
-	cd boot && make
+	cd boot && make $(DEBUG)
 
 system: boot tools FORCE
-	cd system && make
+	cd system && make $(DEBUG)
 
 FORCE:
 

@@ -48,9 +48,9 @@ pde new_pde() {
   pde.pwt = 0;
   pde.pcd = 0;
   pde.accessed = 0;
-  pde.ign_lo = 0;
-  pde.mbz = 0;
-  pde.ign_hi = 0;
+  pde.dirty = 0;
+  pde.ps = 0;
+  pde.ign = 0;
   pde.avl_lo = 0;
   pde.avl_hi = 0;
   pde.nx = 0;
@@ -68,9 +68,9 @@ pdpe new_pdpe() {
   pdpe.pwt = 0;
   pdpe.pcd = 0;
   pdpe.accessed = 0;
-  pdpe.ign_lo = 0;
-  pdpe.mbz = 0;
-  pdpe.ign_hi = 0;
+  pdpe.dirty = 0;
+  pdpe.ps = 0;
+  pdpe.ign = 0;
   pdpe.avl_lo = 0;
   pdpe.avl_hi = 0;
   pdpe.nx = 0;
@@ -180,6 +180,45 @@ reg_cr3 read_cr3() {
   return cr3;
 }
 
+void write_cr3(reg_cr3 new) {
+  // qword val = new.raw;
+  asm volatile("mov %0, %%cr3" ::"r"(new.raw));
+
+  return;
+}
+
+void *virtual_to_physical(void *virtual, reg_cr3 cr3) {
+  pml4e *pml4 = (pml4e *)EXTRACT_PTTENTRY_BASE(cr3.raw);
+  uint64 pml4_idx = EXTRACT_PML4_IDX(virtual);
+  pml4e pml4_entry = pml4[pml4_idx];
+
+  Print(L"PML4 base: %lX, index: %lu, entry: %lX\r\n", pml4, pml4_idx,
+        pml4_entry);
+
+  pdpe *pdp = (pdpe *)EXTRACT_PTTENTRY_BASE(pml4_entry.pml4e);
+  uint64 pdp_idx = EXTRACT_PDP_IDX(virtual);
+  pdpe pdp_entry = pdp[pdp_idx];
+  Print(L"PDP base: %lX, index: %lu, entry: %lX\r\n", pdp, pdp_idx, pdp_entry);
+  if (pdp_entry.ps) {
+    return (void *)EXTRACT_PTTENTRY_BASE(pdp_entry.pdpe);
+  }
+
+  pde *pd = (pde *)EXTRACT_PTTENTRY_BASE(pdp_entry.pdpe);
+  uint64 pd_idx = EXTRACT_PD_IDX(virtual);
+  pde pd_entry = pd[pd_idx];
+  Print(L"PD base: %lX, index: %lu, entry: %lX\r\n", pd, pd_idx, pd_entry);
+  if (pd_entry.ps) {
+    return (void *)EXTRACT_PTTENTRY_BASE(pd_entry.pde);
+  }
+
+  pte *pt = (pte *)EXTRACT_PTTENTRY_BASE(pd_entry.pde);
+  uint64 pt_idx = EXTRACT_PT_IDX(virtual);
+  pte pt_entry = pt[pt_idx];
+  Print(L"PT base: %lX, index: %lu, entry: %lX\r\n", pt, pt_idx, pt_entry);
+
+  return (void *)EXTRACT_PTTENTRY_BASE(pt_entry.pte);
+}
+
 reg_cr3 setup_page_tables(uint64 kernel_text_pages, uint64 kernel_heap_pages,
                           uint64 kernel_stack_pages, void *kernel_text_phys_loc,
                           void *kernel_heap_phys_loc,
@@ -276,4 +315,10 @@ reg_cr3 setup_page_tables(uint64 kernel_text_pages, uint64 kernel_heap_pages,
     map_at(id, base, base, num_pages, TRUE);
   }
   Print(L"done\r\n");
+
+  reg_cr3 cr3;
+  cr3.raw = (reg64)id;
+  Print(L"CR3.raw: %lX\r\n", cr3.raw);
+
+  return cr3;
 }

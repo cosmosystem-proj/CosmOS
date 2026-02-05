@@ -9,6 +9,8 @@
 
 all: 3rdparty
 
+debug: all
+
 3rdparty: FORCE
 	cd 3rdparty && make
 

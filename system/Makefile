@@ -14,9 +14,13 @@ MKGPT = ../tools/3rdparty/mkgpt/mkgpt
 
 all: qemu-run
 
+debug: QEMU_DEBUG = -gdb tcp::1234 -S
+
+debug: all
+
 qemu-run: boot-img
 #qemu-system-x86_64 -bios OVMF.fd -drive file=efi.img,if=ide
-	qemu-system-x86_64 -L . -pflash OVMF.fd -hda efi.img -monitor stdio
+	qemu-system-x86_64 $(QEMU-DEBUG) -L . -pflash OVMF.fd -hda efi.img -serial stdio -D qemu.log -monitor telnet::45454,server,nowait
 
 boot-img: OVMF.fd efi.img
 
