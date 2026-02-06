@@ -19,13 +19,16 @@ tools: FORCE
 boot: FORCE
 	cd boot && make $(DEBUG)
 
-system: boot tools FORCE
+kernel: FORCE
+	cd kernel && make $(DEBUG)
+
+system: boot tools kernel FORCE
 	cd system && make $(DEBUG)
 
 FORCE:
 
 
-clean: tools-clean boot-clean system-clean
+clean: tools-clean boot-clean kernel-clean system-clean
 
 tools-clean:
 	cd tools && make clean
@@ -35,3 +38,6 @@ boot-clean:
 
 system-clean:
 	cd system && make clean
+
+kernel-clean:
+	cd kernel && make clean

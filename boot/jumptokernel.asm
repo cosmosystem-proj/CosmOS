@@ -8,7 +8,12 @@ jump_to_kernel:
          push rbp
          mov rbp, rsp
 
-         mov rax, 5
+         mov cr3, rdi
+         mov rsp, 0
+
+         mov rax, 0xFFFF800000000000
+
+         jmp rax
 
          loop:
             jmp loop
