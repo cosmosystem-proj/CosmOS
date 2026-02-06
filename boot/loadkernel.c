@@ -48,9 +48,9 @@ void load_kernel(EFI_HANDLE image_handle, byte *phys_addr) {
   // out, not the actual kernel
   phys_addr[file_size] = '\0';
 
-  Print(L"%a", phys_addr);
+  //  Print(L"%a", phys_addr);
 
-  wait_key_press();
+  // wait_key_press();
 
   return;
 }

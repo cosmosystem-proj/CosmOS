@@ -22,7 +22,7 @@
 #include <types.h>
 
 const CHAR16 *kernel_path = u"\\EFI\\BOOT\\cosmos.bin";
-void jump_to_kernel();
+void jump_to_kernel(qword cr3, void *pmap_start, void *heap_start);
 
 EFI_STATUS EFIAPI efi_main(EFI_HANDLE ImageHandle,
                            EFI_SYSTEM_TABLE *SystemTable) {
@@ -145,7 +145,7 @@ EFI_STATUS EFIAPI efi_main(EFI_HANDLE ImageHandle,
         virtual_to_physical(&(BS->ExitBootServices), new_cr3));
 #endif
   //  uefi_call_wrapper(BS->ExitBootServices, 0);
-
+#if 0
   Print(L"EFIMain virtual address: %lX, physical in old CR3: %lX, new CR3: "
         L"%lX\r\n",
         &efi_main, virtual_to_physical(&efi_main, cr3),
@@ -155,6 +155,10 @@ EFI_STATUS EFIAPI efi_main(EFI_HANDLE ImageHandle,
         L"%lX\r\n",
         &write_cr3, virtual_to_physical(&write_cr3, cr3),
         virtual_to_physical(&write_cr3, new_cr3));
+#endif
+
+  Print(L"CR3, pmap, heap: %lX, %lX, %lX\r\n", new_cr3.raw, phys_map_vaddr,
+        kernel_heap_vaddr);
 
   /*Print(L"Swapping CR3\r\n");
   write_cr3(new_cr3);
@@ -189,7 +193,7 @@ EFI_STATUS EFIAPI efi_main(EFI_HANDLE ImageHandle,
     Print(L"EBS failed...\r\n");
     wait_key_press();
   } else {
-    jump_to_kernel();
+    jump_to_kernel(new_cr3.raw, phys_map_vaddr, kernel_heap_vaddr);
   }
 
   return EFI_SUCCESS;
