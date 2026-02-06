@@ -7,7 +7,7 @@
 
 .PHONY = all tools clean
 
-all: boot
+all: system
 
 debug: DEBUG = debug
 

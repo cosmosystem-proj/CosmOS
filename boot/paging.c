@@ -175,7 +175,7 @@ void map_at(pml4e *pml4, void *phys, void *virt, uint64 pages,
 reg_cr3 read_cr3() {
   reg_cr3 cr3;
 
-  asm volatile("mov %%cr3 ,%0" : "=r"(cr3.raw));
+  asm volatile("mov %%cr3, %0" : "=r"(cr3.raw));
 
   return cr3;
 }

@@ -15,12 +15,13 @@ MKGPT = ../tools/3rdparty/mkgpt/mkgpt
 all: qemu-run
 
 debug: QEMU_DEBUG = -gdb tcp::1234 -S
+debug: SUBMAKE_DEBUG = debug
 
 debug: all
 
 qemu-run: boot-img
 #qemu-system-x86_64 -bios OVMF.fd -drive file=efi.img,if=ide
-	qemu-system-x86_64 $(QEMU-DEBUG) -L . -pflash OVMF.fd -hda efi.img -serial stdio -D qemu.log -monitor telnet::45454,server,nowait
+	qemu-system-x86_64 $(QEMU_DEBUG) -L . -pflash OVMF.fd -hda efi.img -D qemu.log -monitor telnet::45454,server,nowait
 
 boot-img: OVMF.fd efi.img
 
@@ -29,16 +30,19 @@ efi.img: tmp.img $(MKGPT)
 	
 
 
-tmp.img: ../boot/BOOTX64.efi test.txt
+tmp.img: ../boot/BOOTX64.efi ../kernel/cosmos.bin
 	dd if=/dev/zero of=tmp.img bs=1k count=1440
 	mformat -i tmp.img -f 1440 ::
 	mmd -i tmp.img ::/EFI
 	mmd -i tmp.img ::/EFI/BOOT
 	mcopy -i tmp.img ../boot/BOOTX64.efi ::/EFI/BOOT
-	mcopy -i tmp.img test.txt ::/EFI/BOOT
+	mcopy -i tmp.img ../kernel/cosmos.bin ::/EFI/BOOT
 
 ../boot/BOOTX64.efi:
 	cd ../boot && make BOOTX64.efi
+
+../kernel/cosmos.bin:
+	cd ../kernel && make $(SUBMAKE_DEBUG)
 
 OVMF.fd:
 	$(WGET) $(OVMF_URL) -O $@

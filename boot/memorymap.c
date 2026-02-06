@@ -75,8 +75,8 @@ physical_map_list *convert_memory_map(uefi_memory_map *uefi_map) {
   return list;
 }
 
-void memory_map(EFI_MEMORY_DESCRIPTOR **mem_map, UINTN *count,
-                UINTN *descriptor_size) {
+UINTN memory_map(EFI_MEMORY_DESCRIPTOR **mem_map, UINTN *count,
+                 UINTN *descriptor_size) {
   EFI_STATUS map_status = ~EFI_SUCCESS;
   EFI_STATUS pool_status;
   EFI_MEMORY_DESCRIPTOR *map = NULL;
@@ -109,6 +109,8 @@ void memory_map(EFI_MEMORY_DESCRIPTOR **mem_map, UINTN *count,
   *mem_map = map;
 
   Print(L"Map obtained\r\n");
+
+  return map_key;
 
 #if 0
   for (UINTN i = 0; i < num_entries; i++) {

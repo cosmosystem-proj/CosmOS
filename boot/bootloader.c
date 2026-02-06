@@ -21,7 +21,8 @@
 #include <boot/wrappers.h>
 #include <types.h>
 
-const CHAR16 *kernel_path = u"\\EFI\\BOOT\\test.txt";
+const CHAR16 *kernel_path = u"\\EFI\\BOOT\\cosmos.bin";
+void jump_to_kernel();
 
 EFI_STATUS EFIAPI efi_main(EFI_HANDLE ImageHandle,
                            EFI_SYSTEM_TABLE *SystemTable) {
@@ -49,7 +50,7 @@ EFI_STATUS EFIAPI efi_main(EFI_HANDLE ImageHandle,
   EFI_MEMORY_DESCRIPTOR *map;
   UINTN map_entries;
   UINTN descriptor_size;
-  memory_map(&map, &map_entries, &descriptor_size);
+  UINTN map_key = memory_map(&map, &map_entries, &descriptor_size);
   uefi_memory_map mem_map = {map, map_entries, descriptor_size};
 
   physical_map_list *pmap = convert_memory_map(&mem_map);
@@ -101,6 +102,12 @@ EFI_STATUS EFIAPI efi_main(EFI_HANDLE ImageHandle,
       kernel_text_paddr, kernel_heap_paddr, kernel_stack_paddr,
       PAGES_REQUIRED_4K(sizeof(physical_map) * memtab_size), memtab,
       memtab_size);
+
+  void *phys_map_vaddr =
+      (void *)KERNEL_BASE_ADDRESS + (kernel_text_pages * ONE_KILOBYTE * 4);
+  void *kernel_heap_vaddr =
+      phys_map_vaddr + (PAGES_REQUIRED_4K(sizeof(physical_map) * memtab_size) *
+                        ONE_KILOBYTE * 4);
 #if 0
 
   Print(L"Kernel text at physical %lX, virtual %lX, mapped to %lX\r\n",
@@ -154,6 +161,36 @@ EFI_STATUS EFIAPI efi_main(EFI_HANDLE ImageHandle,
   Print(L"CR3 swapped\r\n");*/
 
   load_kernel(ImageHandle, (byte *)kernel_text_paddr);
+
+  // we have to call GetMemoryMap again to get a valid map key, since
+  // ExitBootServices fails with an invalid parameter error if any memory has
+  // been allocated since the GetMemoryMap call the map key refers to was made
+
+  Print(L"jump_to_kernel addr: %lX\r\n", jump_to_kernel);
+  wait_key_press();
+
+  EFI_MEMORY_DESCRIPTOR *map2;
+  UINTN map_entries2;
+  UINTN descriptor_size2;
+  UINTN map_key2;
+  UINTN map_size = 0;
+  UINTN descriptor_version;
+
+  // map_key = memory_map(&map2, &map_entries2, &descriptor_size2);
+  uefi_call_wrapper(BS->GetMemoryMap, 5, &map_size, NULL, &map_key2,
+                    &descriptor_size2, &descriptor_version);
+  // Print(L"Memkey: %lX\r\n", map_key2);
+
+  EFI_STATUS ebs_status;
+  ebs_status =
+      uefi_call_wrapper(BS->ExitBootServices, 2, ImageHandle, map_key2);
+
+  if (ebs_status == EFI_INVALID_PARAMETER) {
+    Print(L"EBS failed...\r\n");
+    wait_key_press();
+  } else {
+    jump_to_kernel();
+  }
 
   return EFI_SUCCESS;
 }

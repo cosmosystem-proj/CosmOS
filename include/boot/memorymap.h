@@ -30,8 +30,8 @@ typedef struct {
 } uefi_memory_map;
 
 physical_map_list *convert_memory_map(uefi_memory_map *uefi_map);
-void memory_map(EFI_MEMORY_DESCRIPTOR **mem_map, UINTN *count,
-                UINTN *descriptor_size);
+UINTN memory_map(EFI_MEMORY_DESCRIPTOR **mem_map, UINTN *count,
+                 UINTN *descriptor_size);
 physical_map_list *reduce_memory_map(physical_map_list *pml);
 physical_map_list *sort_memory_map(physical_map_list *pml);
 physical_map *tabularize_memory_map(physical_map_list *pml, uint64 *count);
