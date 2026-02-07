@@ -9,8 +9,15 @@
  * licensing information.
  */
 
-void CosmOS() {
-  asm volatile("mov 5, %rax");
+#include <sys/console/early_console.h>
+#include <types.h>
+
+void *heap_base;
+
+void CosmOS(reg64 cr3, void *phys_map_vaddr, void *heap_vaddr) {
+  heap_base = heap_vaddr;
+
+  early_console_buffer_init();
 
   while (1) {
     asm volatile("hlt");

@@ -34,6 +34,10 @@ typedef unsigned int reg32;
 typedef unsigned short reg16;
 typedef unsigned char reg8;
 
+// string types
+typedef short utf16;
+typedef int utf32;
+
 // specific registers
 typedef union {
   reg64 raw;
