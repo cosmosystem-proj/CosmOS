@@ -15,6 +15,8 @@
 #define MAX(a, b) (((a) > (b)) ? (a) : (b))
 #define MIN(a, b) (((a) < (b)) ? (a) : (b))
 
+#define NULL ((void *)0)
+
 #ifdef __LP64__
 // unsigned integer types
 typedef unsigned long uint64;

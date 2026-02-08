@@ -18,6 +18,7 @@ void CosmOS(reg64 cr3, void *phys_map_vaddr, void *heap_vaddr) {
   heap_base = heap_vaddr;
 
   early_console_buffer_init();
+  set_system_console(NULL);
 
   while (1) {
     asm volatile("hlt");
