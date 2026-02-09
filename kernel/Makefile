@@ -7,7 +7,11 @@
 
 SOURCES_C = $(shell find . -type f -iname '*.c' | sort)
 OBJECTS_C = $(SOURCES_C:.c=.o)
+SOURCES_ASM = $(shell find . -type f -iname '*.asm' | sort)
+OBJECTS_ASM = $(SOURCES_ASM:.asm=.o)
 DEPFILES = $(SOURCES_C:.c=.d)
+
+ASM = nasm
 
 
 KERNEL_ELF = cosmos.elf
@@ -29,6 +33,7 @@ OBJCOPYFLAGS = -O binary
 all: $(KERNEL_BIN)
 
 debug: DEBUG = -DDEBUG -gdwarf-4
+debug: ASM_DEBUG = -gdwarf
 
 debug: all
 
@@ -36,8 +41,11 @@ $(KERNEL_BIN): $(KERNEL_ELF)
 	$(OBJCOPY) $(OBJCOPYFLAGS) $(KERNEL_ELF) $(KERNEL_BIN)
 
 
-$(KERNEL_ELF): $(OBJECTS_C)
-	$(LD) $(LDFLAGS) -o $(KERNEL_ELF) $(OBJECTS_C)
+$(KERNEL_ELF): $(OBJECTS_C) $(OBJECTS_ASM)
+	$(LD) $(LDFLAGS) -o $(KERNEL_ELF) $(OBJECTS_C) $(OBJECTS_ASM)
+
+%.o: %.asm
+	$(ASM) -f elf64 $(ASM_DEBUG) $< -o $@
 
 .c.o: 
 	$(CC) $(DEBUG) $(CFLAGS) -c $< -o $@

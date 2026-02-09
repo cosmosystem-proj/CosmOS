@@ -13,10 +13,14 @@
 #include <sys/kmalloc/kmalloc.h>
 #include <types.h>
 
+void gdt_init();
+
 void *heap_base;
 
 void CosmOS(reg64 cr3, void *phys_map_vaddr, void *heap_vaddr) {
   heap_base = heap_vaddr;
+
+  gdt_init();
 
   early_console_buffer_init();
   // set_system_console(NULL);
