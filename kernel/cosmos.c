@@ -22,10 +22,15 @@ void CosmOS(reg64 cr3, void *phys_map_vaddr, void *heap_vaddr) {
   // set_system_console(NULL);
   kmalloc_init();
   void *a = kmalloc(55);
-  void *b = kmalloc(41);
+  void *b = kmalloc(748);
   void *c = kmalloc(256);
 
-  while ((a == b) && (b == c))
+  kfree(b);
+
+  void *d = kmalloc(26);
+  void *e = kmalloc(19);
+
+  while ((a == b) && (b == c) && d && e)
     ;
 
   while (1) {

@@ -14,6 +14,7 @@
 
 #include <types.h>
 
+void kfree(void *p);
 void *kmalloc(size_t size);
 void kmalloc_init();
 

@@ -12,20 +12,7 @@
 #include <cosmos.h>
 #include <types.h>
 
-#define KMALLOC_HEAP_BASE (kmalloc_header *)heap_base
-#define PAD_BYTES_8(x) ((x) % 8 ? ((x) + (8 - ((x) % 8))) : (x))
-
-#define INUSE(x) ((x) & 1)
-
-// don't export this into a header, it's not part of the public kmalloc API
-typedef struct __attribute__((packed, aligned(8))) {
-  void *prev;
-  void *base;
-  size_t len;
-  bool inuse;
-  uint64 owner;
-  void *next;
-} kmalloc_header;
+#include "kmalloc_internal.h"
 
 void kmalloc_init() {
   kmalloc_header *start;
