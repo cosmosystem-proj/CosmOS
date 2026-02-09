@@ -15,7 +15,6 @@
 #include <types.h>
 
 #define KMALLOC_HEAP_BASE (kmalloc_header *)heap_base
-#define PAD_BYTES_8(x) ((x) % 8 ? ((x) + (8 - ((x) % 8))) : (x))
 
 #define INUSE(x) ((x) & 1)
 

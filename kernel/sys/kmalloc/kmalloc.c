@@ -10,6 +10,7 @@
  */
 
 #include <cosmos.h>
+#include <sys/kmalloc/kmalloc.h>
 #include <types.h>
 
 #include "kmalloc_internal.h"
@@ -37,7 +38,7 @@ void *kmalloc(size_t size) {
   kmalloc_header *cur;
   kmalloc_header *new;
 
-  size_t size_padded = PAD_BYTES_8(size);
+  size_t size_padded = PAD_BYTES(size, 8);
 
   // Detect wraparound for extremely large values and fail if it happens
   if (size_padded < size) {

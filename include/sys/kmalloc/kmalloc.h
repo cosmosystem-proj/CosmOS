@@ -14,6 +14,10 @@
 
 #include <types.h>
 
+#define PAD_BYTES(len, padmultiple)                                            \
+  ((len) % (padmultiple) ? ((len) + ((padmultiple) - ((len) % (padmultiple)))) \
+                         : (len))
+
 void kfree(void *p);
 void *kmalloc(size_t size);
 void kmalloc_init();
