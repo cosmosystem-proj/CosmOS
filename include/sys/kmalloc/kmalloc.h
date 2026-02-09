@@ -1,6 +1,6 @@
 /* Creator: Kurt M. Weber
  *
- * Created on: 2026-02-07
+ * Created on: 2026-02-08
  *
  * This file is part of CosmOS, a component of the Cosmoverse.
  *
@@ -9,11 +9,12 @@
  * licensing information.
  */
 
+#ifndef KMALLOC_H
+#define KMALLOC_H
+
 #include <types.h>
 
-uint64 system_console;
+void *kmalloc(size_t size);
+void kmalloc_init();
 
-bool set_system_console(uint64 console) {
-  console = system_console;
-  return true;
-}
+#endif

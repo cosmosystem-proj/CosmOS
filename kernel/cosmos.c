@@ -10,6 +10,7 @@
  */
 
 #include <sys/console/early_console.h>
+#include <sys/kmalloc/kmalloc.h>
 #include <types.h>
 
 void *heap_base;
@@ -18,7 +19,14 @@ void CosmOS(reg64 cr3, void *phys_map_vaddr, void *heap_vaddr) {
   heap_base = heap_vaddr;
 
   early_console_buffer_init();
-  set_system_console(NULL);
+  // set_system_console(NULL);
+  kmalloc_init();
+  void *a = kmalloc(55);
+  void *b = kmalloc(41);
+  void *c = kmalloc(256);
+
+  while ((a == b) && (b == c))
+    ;
 
   while (1) {
     asm volatile("hlt");

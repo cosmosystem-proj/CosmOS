@@ -36,6 +36,10 @@ typedef unsigned int reg32;
 typedef unsigned short reg16;
 typedef unsigned char reg8;
 
+// utility types
+typedef unsigned long size_t;
+#define SIZE_T_MAX 0xFFFFFFFFFFFFFFFF
+
 // string types
 typedef short utf16;
 typedef int utf32;
