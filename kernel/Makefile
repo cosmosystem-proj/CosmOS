@@ -5,7 +5,7 @@
 # HL3-CL-ECO-EXTR-FFD-MEDIA-MY-SUP-SV-TAL-USTA-XUAR
 # See file LICENSE for full licensing information.
 
-SOURCES_C = $(shell find . -type f -iname '*.c' | sort)
+SOURCES_C =  cosmos.c $(shell find . -type f -iname '*.c'  ! -name cosmos.c | sort)
 OBJECTS_C = $(SOURCES_C:.c=.o)
 SOURCES_ASM = $(shell find . -type f -iname '*.asm' | sort)
 OBJECTS_ASM = $(SOURCES_ASM:.asm=.o)
@@ -51,6 +51,6 @@ $(KERNEL_ELF): $(OBJECTS_C) $(OBJECTS_ASM)
 	$(CC) $(DEBUG) $(CFLAGS) -c $< -o $@
 
 clean:
-	rm -f $(OBJECTS_C) $(DEPFILES) *.elf *.bin
+	rm -f $(OBJECTS_C) $(OBJECTS_ASM) $(DEPFILES) *.elf *.bin
 
 -include $(DEPFILES)

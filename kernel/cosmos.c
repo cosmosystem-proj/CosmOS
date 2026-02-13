@@ -9,6 +9,7 @@
  * licensing information.
  */
 
+#include <interrupts/idt.h>
 #include <sys/console/early_console.h>
 #include <sys/kmalloc/kmalloc.h>
 #include <types.h>
@@ -21,6 +22,7 @@ void CosmOS(reg64 cr3, void *phys_map_vaddr, void *heap_vaddr) {
   heap_base = heap_vaddr;
 
   gdt_init();
+  idt_init();
 
   early_console_buffer_init();
   // set_system_console(NULL);

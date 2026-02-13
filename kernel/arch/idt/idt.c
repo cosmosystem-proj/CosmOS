@@ -70,5 +70,12 @@ void idt_init() {
   idt_add_isr(isr_generic, INTERRUPT_VECTOR_IRQ14, IDT_ATTR_INTR);
   idt_add_isr(isr_generic, INTERRUPT_VECTOR_IRQ15, IDT_ATTR_INTR);
 
+  idtr idtr;
+
+  idtr.limit = (IDT_SIZE * sizeof(idt_entry)) - 1;
+  idtr.base = (uint64)&idt;
+
+  asm volatile("lidt %0" ::"m"(idtr));
+
   return;
 }

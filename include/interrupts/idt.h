@@ -32,4 +32,11 @@ typedef struct {
   uint32 reserved;
 } __attribute__((packed)) idt_entry;
 
+typedef struct {
+  uint16 limit;
+  uint64 base;
+} __attribute__((packed)) idtr;
+
+void idt_init();
+
 #endif

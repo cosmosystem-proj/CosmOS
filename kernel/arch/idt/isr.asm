@@ -51,3 +51,5 @@ isr_generic:
     ; call isr_generic_handler
     popaq
     iretq
+
+section .note.GNU-stack noalloc noexec nowrite progbits
