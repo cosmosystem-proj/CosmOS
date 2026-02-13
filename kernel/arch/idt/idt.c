@@ -61,6 +61,14 @@ void idt_init() {
   idt_add_isr(isr_generic, INTERRUPT_VECTOR_IRQ5, IDT_ATTR_INTR);
   idt_add_isr(isr_generic, INTERRUPT_VECTOR_IRQ6, IDT_ATTR_INTR);
   idt_add_isr(isr_generic, INTERRUPT_VECTOR_IRQ7, IDT_ATTR_INTR);
+  idt_add_isr(isr_generic, INTERRUPT_VECTOR_IRQ8, IDT_ATTR_INTR);
+  idt_add_isr(isr_generic, INTERRUPT_VECTOR_IRQ9, IDT_ATTR_INTR);
+  idt_add_isr(isr_generic, INTERRUPT_VECTOR_IRQ10, IDT_ATTR_INTR);
+  idt_add_isr(isr_generic, INTERRUPT_VECTOR_IRQ11, IDT_ATTR_INTR);
+  idt_add_isr(isr_generic, INTERRUPT_VECTOR_IRQ12, IDT_ATTR_INTR);
+  idt_add_isr(isr_generic, INTERRUPT_VECTOR_IRQ13, IDT_ATTR_INTR);
+  idt_add_isr(isr_generic, INTERRUPT_VECTOR_IRQ14, IDT_ATTR_INTR);
+  idt_add_isr(isr_generic, INTERRUPT_VECTOR_IRQ15, IDT_ATTR_INTR);
 
   return;
 }
