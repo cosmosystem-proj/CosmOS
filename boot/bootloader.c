@@ -32,7 +32,7 @@ EFI_STATUS EFIAPI efi_main(EFI_HANDLE ImageHandle,
 
   Print(L"Preparing to load CosmOS\r\n");
 
-  wait_key_press();
+  // wait_key_press();
 
   // Open kernel, get size, and set up page tables so we can jump to it
   EFI_LOADED_IMAGE *img = get_loaded_image(ImageHandle);
@@ -171,7 +171,7 @@ EFI_STATUS EFIAPI efi_main(EFI_HANDLE ImageHandle,
   // been allocated since the GetMemoryMap call the map key refers to was made
 
   Print(L"jump_to_kernel addr: %lX\r\n", jump_to_kernel);
-  wait_key_press();
+  // wait_key_press();
 
   EFI_MEMORY_DESCRIPTOR *map2;
   UINTN map_entries2;

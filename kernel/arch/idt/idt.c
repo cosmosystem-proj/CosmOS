@@ -23,7 +23,7 @@ void idt_add_isr(void *isr, interrupt_vector vec, uint8 type) {
   idt[vec].ist = 0;
   idt[vec].attrs = type | IDT_ATTR_DPL_0 | IDT_ATTR_PRESENT;
   idt[vec].offset_word_mid = (uint16)(((uint64)isr >> 16) & 0xFFFF);
-  idt[vec].offset_dword_high = (uint32)(((uint64)isr >> 32) & 0xFFFF);
+  idt[vec].offset_dword_high = (uint32)(((uint64)isr >> 32) & 0xFFFFFFFF);
 
   return;
 }
